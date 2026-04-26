@@ -1,5 +1,8 @@
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Calculator that is optimized to doing subtraction quickly (2s) and addition slowly (10s).
+ */
 public class SubtractionCalculator {
     public int solve(mathProblem problem) {
         if (problem.operation().equals("subtraction")) {

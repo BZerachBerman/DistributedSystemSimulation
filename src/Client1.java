@@ -6,6 +6,8 @@ public class Client1 {
         mathProblems = new mathProblem[10];
         int randInt1;
         int randInt2;
+
+        //Create 10 new math problems.
         for(int i = 0; i < 10; i++) {
             randInt1 = (int) (Math.random() * 10);
             randInt2 = (int) (Math.random() * 10);
@@ -13,6 +15,7 @@ public class Client1 {
         }
     }
 
+    //Return the next math problem
     public mathProblem getMathProblem() {
         int currentProblem = nextProblem;
         nextProblem = currentProblem + 1 % mathProblems.length;
