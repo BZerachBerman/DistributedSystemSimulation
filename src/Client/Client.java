@@ -1,10 +1,11 @@
-import java.util.Objects;
+package Client;
+
+import Shared.mathProblem;
+
 import java.net.*;
 import java.io.*;
-import java.util.Collections;
-import java.util.ArrayList;
 
-public class Client1 {
+public class Client {
     mathProblem[] mathProblems;
     int nextProblem;
     
@@ -38,7 +39,7 @@ public class Client1 {
     	
     }
     
-    Client1() {
+    Client() {
         nextProblem = 0;
         mathProblems = new mathProblem[10];
         int randInt1;

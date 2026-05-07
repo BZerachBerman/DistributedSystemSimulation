@@ -1,9 +1,13 @@
+package Server;
+
+import Shared.mathProblem;
+
 import java.util.concurrent.TimeUnit;
 
 /**
  * Calculator that is optimized to doing addition quickly (2s) and subtraction slowly (10s).
  */
-public class AdditionCalculator {
+public class AdditionSlave {
     public int solve(mathProblem problem) {
         if (problem.operation().equals("addition")) {
             return add(problem.num1(),  problem.num2());
