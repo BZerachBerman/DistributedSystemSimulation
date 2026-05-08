@@ -15,8 +15,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * A Runnable class responsible for managing all communication to and from all server Slaves.
- * This includes connecting to the slaves, assigning them a SlaveReader and a SlaveWriter,
- * and scheduling.
+ * This includes connecting to the slaves, assigning them a SlaveReader and a SlaveWriter, and scheduling.
  */
 public class SlaveCommunicator implements Runnable {
     ConcurrentLinkedQueue<mathProblem> Problems; //For sharing math problems with Master
@@ -28,17 +27,24 @@ public class SlaveCommunicator implements Runnable {
     List<ConcurrentLinkedQueue<mathProblem>> mathProblemQueues;
     int NUMBER_OF_SLAVES = 2;
 
+    //When first instantiated, SlaveCommunicator connects with slaves, spins up Reader and Writer threads,
+    // and passes them slaves to communicate with.
     public SlaveCommunicator(ServerSocket serverSocket, ConcurrentLinkedQueue<mathProblem> Problems, ConcurrentLinkedQueue<mathSolution> Solutions) {
         this.Problems = Problems;
         this.Solutions = Solutions;
         readers = new SlaveReader[NUMBER_OF_SLAVES];
         mathProblemQueues = new ArrayList<>();
         this.serverSocket = serverSocket;
+        //NOTE: I chose to put this in the constructor in order to prevent Master
+        //from connecting with clients until all the slaves are booted up.
+        //This is not a final decision.
+        connectToSlaves(serverSocket);
+
     }
 
+    //The Run() method is just for scheduling; everything else(mathSolutions) pass straight through SlaveCommunicator.
     @Override
     public void run() {
-        connectToSlaves(serverSocket);
         while (true) {
             if (!Problems.isEmpty()) {
                 sendProblemToSlave(Problems.poll());
@@ -48,6 +54,10 @@ public class SlaveCommunicator implements Runnable {
 
     private void sendProblemToSlave(mathProblem problem) {
         String operator = problem.operator();
+        //TODO create scheduling algorithm. This includes making an array that tracks workload of each slave.
+        // I was thinking of making an array of SlaveWriters with a workload variable.
+        // Alternatively, the algorithm can calculate workload live.
+        // Either way, we need a way to differentiate between AdditionSlaves and SubtractionSlaves.
         if (operator.equals("+")) {
             mathProblemQueues.get(0).add(problem);
         }

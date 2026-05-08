@@ -49,7 +49,7 @@ public class Client {
         for(int i = 0; i < 10; i++) {
             randInt1 = (int) (Math.random() * 10);
             randInt2 = (int) (Math.random() * 10);
-            mathProblems[i] = new mathProblem(randInt1, randInt2, Math.random() < 0.5 ? "addition" : "subtraction");
+            mathProblems[i] = new mathProblem(15, 10, "+", 12);
         }
     }
 

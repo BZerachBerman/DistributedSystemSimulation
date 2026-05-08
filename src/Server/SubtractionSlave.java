@@ -8,9 +8,9 @@ import java.util.concurrent.TimeUnit;
  */
 public class SubtractionSlave {
     public int solve(mathProblem problem) {
-        if (problem.operation().equals("subtraction")) {
-            return subtract(problem.num1(), problem.num2());
-        } else return add(problem.num1(), problem.num2());
+        if (problem.operator().equals("-")) {
+            return subtract(problem.right(), problem.left());
+        } else return add(problem.right(), problem.left());
     }
 
     private int subtract(int i, int i1) {

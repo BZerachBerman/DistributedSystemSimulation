@@ -9,10 +9,10 @@ import java.util.concurrent.TimeUnit;
  */
 public class AdditionSlave {
     public int solve(mathProblem problem) {
-        if (problem.operation().equals("addition")) {
-            return add(problem.num1(),  problem.num2());
+        if (problem.operator().equals("+")) {
+            return add(problem.right(),  problem.left());
         }
-        else return subtract(problem.num1(), problem.num2());
+        else return subtract(problem.right(), problem.left());
     }
 
     private int add(int i, int i1) {
