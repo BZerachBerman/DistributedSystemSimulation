@@ -5,7 +5,7 @@ import Shared.mathSolution;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /***
  * The Entry point for the Master/Server program. It spins up a SlaveCommunicator thread
@@ -30,8 +30,8 @@ public class Master {
         ClientCommunicator clientCommunicator;
         SlaveCommunicator slaveCommunicator;
 
-        ConcurrentLinkedQueue<mathProblem> Problems = new ConcurrentLinkedQueue<>();
-        ConcurrentLinkedQueue<mathSolution> Solutions = new ConcurrentLinkedQueue<>();
+        LinkedBlockingQueue<mathProblem> Problems = new LinkedBlockingQueue<>();
+        LinkedBlockingQueue<mathSolution> Solutions = new LinkedBlockingQueue<>();
 
         try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
             System.out.print("Master.Master Running on port " + portNumber);

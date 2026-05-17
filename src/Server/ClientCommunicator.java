@@ -7,17 +7,18 @@ import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import Shared.mathProblem;
 import Shared.mathSolution;
 
 
 public class ClientCommunicator implements Runnable {
-    ConcurrentLinkedQueue<mathProblem> Problems;
-    ConcurrentLinkedQueue<mathSolution> Solutions;
+    LinkedBlockingQueue<mathProblem> Problems;
+    LinkedBlockingQueue<mathSolution> Solutions;
     ServerSocket serverSocket;
 
-    public ClientCommunicator(ServerSocket serverSocket, ConcurrentLinkedQueue<mathProblem> problems, ConcurrentLinkedQueue<mathSolution> solutions) {
+    public ClientCommunicator(ServerSocket serverSocket, LinkedBlockingQueue<mathProblem> problems, LinkedBlockingQueue<mathSolution> solutions) {
         this.serverSocket = serverSocket;
         this.Problems = problems;
         this.Solutions = solutions;
@@ -40,13 +41,5 @@ public class ClientCommunicator implements Runnable {
                 //idk yet
             }
         }
-    }
-
-    public mathProblem getNextProblem() {
-        return Problems.poll();
-    }
-
-    public void send(mathSolution solution) {
-
     }
 }

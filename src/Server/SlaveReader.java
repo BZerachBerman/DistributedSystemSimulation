@@ -3,13 +3,13 @@ package Server;
 import Shared.mathSolution;
 
 import java.io.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class SlaveReader extends Thread {
     private BufferedReader br;
-    ConcurrentLinkedQueue<mathSolution> solutions;
+    LinkedBlockingQueue<mathSolution> solutions;
 
-    public SlaveReader(BufferedReader br, ConcurrentLinkedQueue<mathSolution> solutions) {
+    public SlaveReader(BufferedReader br, LinkedBlockingQueue<mathSolution> solutions) {
         this.br = br;
         this.solutions = solutions;
     }

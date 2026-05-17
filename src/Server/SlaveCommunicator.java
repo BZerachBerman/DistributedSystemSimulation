@@ -11,25 +11,25 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * A Runnable class responsible for managing all communication to and from all server Slaves.
  * This includes connecting to the slaves, assigning them a SlaveReader and a SlaveWriter, and scheduling.
  */
 public class SlaveCommunicator implements Runnable {
-    ConcurrentLinkedQueue<mathProblem> Problems; //For sharing math problems with Master
-    ConcurrentLinkedQueue<mathSolution> Solutions; //Shared by all the SlaveReader Threads and Master
+    LinkedBlockingQueue<mathProblem> Problems; //For sharing math problems with Master
+    LinkedBlockingQueue<mathSolution> Solutions; //Shared by all the SlaveReader Threads and Master
     ServerSocket serverSocket;
     SlaveReader[] readers; // For no reason.
 
     // For storing the individual inter-thread problem communication queues.
-    List<ConcurrentLinkedQueue<mathProblem>> mathProblemQueues;
+    List<LinkedBlockingQueue<mathProblem>> mathProblemQueues;
     int NUMBER_OF_SLAVES = 2;
 
     //When first instantiated, SlaveCommunicator connects with slaves, spins up Reader and Writer threads,
     // and passes them slaves to communicate with.
-    public SlaveCommunicator(ServerSocket serverSocket, ConcurrentLinkedQueue<mathProblem> Problems, ConcurrentLinkedQueue<mathSolution> Solutions) {
+    public SlaveCommunicator(ServerSocket serverSocket, LinkedBlockingQueue<mathProblem> Problems, LinkedBlockingQueue<mathSolution> Solutions) {
         this.Problems = Problems;
         this.Solutions = Solutions;
         readers = new SlaveReader[NUMBER_OF_SLAVES];
@@ -58,10 +58,9 @@ public class SlaveCommunicator implements Runnable {
         // I was thinking of making an array of SlaveWriters with a workload variable.
         // Alternatively, the algorithm can calculate workload live.
         // Either way, we need a way to differentiate between AdditionSlaves and SubtractionSlaves.
-        if (operator.equals("+")) {
-            mathProblemQueues.get(0).add(problem);
-        }
+        mathProblemQueues.get(0).add(problem);
     }
+
 
     private void connectToSlaves(ServerSocket serverSocket) {
         for (int i = 0; i < NUMBER_OF_SLAVES; i++) {
@@ -71,7 +70,7 @@ public class SlaveCommunicator implements Runnable {
                 Socket slaveSocket = serverSocket.accept();
                 PrintWriter pw = new PrintWriter(slaveSocket.getOutputStream(), true);
                 BufferedReader br = new BufferedReader(new InputStreamReader(slaveSocket.getInputStream()));
-                ConcurrentLinkedQueue<mathProblem> problems = new ConcurrentLinkedQueue<>();
+                LinkedBlockingQueue<mathProblem> problems = new LinkedBlockingQueue<>();
 
                 //these are the threads, and we pass in the writer and reader respectively
                 SlaveWriter writer = new SlaveWriter(pw, problems);

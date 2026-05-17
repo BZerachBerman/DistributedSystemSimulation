@@ -3,12 +3,12 @@ package Server;
 import Shared.mathProblem;
 
 import java.io.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class SlaveWriter extends Thread {
     private PrintWriter pw;
 
-    public SlaveWriter(PrintWriter pw, ConcurrentLinkedQueue<mathProblem> problems) {
+    public SlaveWriter(PrintWriter pw, LinkedBlockingQueue<mathProblem> problems) {
         this.pw = pw;
     }
 
