@@ -24,7 +24,7 @@ public class SlaveCommunicator implements Runnable {
     SlaveReader[] readers; // For no reason.
 
     // For storing the individual inter-thread problem communication queues.
-    List<LinkedBlockingQueue<mathProblem>> mathProblemQueues;
+    List<LinkedBlockingQueue<mathProblem>> mathProblemQueueList;
     int NUMBER_OF_SLAVES = 2;
 
     //When first instantiated, SlaveCommunicator connects with slaves, spins up Reader and Writer threads,
@@ -33,7 +33,7 @@ public class SlaveCommunicator implements Runnable {
         this.Problems = Problems;
         this.Solutions = Solutions;
         readers = new SlaveReader[NUMBER_OF_SLAVES];
-        mathProblemQueues = new ArrayList<>();
+        mathProblemQueueList = new ArrayList<>();
         this.serverSocket = serverSocket;
         //NOTE: I chose to put this in the constructor in order to prevent Master
         //from connecting with clients until all the slaves are booted up.
@@ -46,8 +46,12 @@ public class SlaveCommunicator implements Runnable {
     @Override
     public void run() {
         while (true) {
-            if (!Problems.isEmpty()) {
-                sendProblemToSlave(Problems.poll());
+            try {
+                // This will block (wait) automatically until an item is available
+                mathProblem nextProblem = Problems.take();
+                sendProblemToSlave(nextProblem);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // Cleanly handle thread shutdown
             }
         }
     }
@@ -58,7 +62,7 @@ public class SlaveCommunicator implements Runnable {
         // I was thinking of making an array of SlaveWriters with a workload variable.
         // Alternatively, the algorithm can calculate workload live.
         // Either way, we need a way to differentiate between AdditionSlaves and SubtractionSlaves.
-        mathProblemQueues.get(0).add(problem);
+        mathProblemQueueList.get(0).add(problem);
     }
 
 
@@ -75,7 +79,7 @@ public class SlaveCommunicator implements Runnable {
                 //these are the threads, and we pass in the writer and reader respectively
                 SlaveWriter writer = new SlaveWriter(pw, problems);
                 writer.start();
-                mathProblemQueues.add(problems);
+                mathProblemQueueList.add(problems);
 
                 SlaveReader reader = new SlaveReader(br, Solutions);
                 reader.start();
