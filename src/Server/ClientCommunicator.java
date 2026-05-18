@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import Shared.mathProblem;
@@ -30,11 +29,14 @@ public class ClientCommunicator implements Runnable {
         while (true) {
             try {
                 Socket clientSocket = serverSocket.accept();
+                System.out.println("[DIAGNOSTIC] A client has connected! Setting up streams...");
                 PrintWriter pw = new PrintWriter(clientSocket.getOutputStream(), true);
                 BufferedReader br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
                 //these are the threads, and we pass in the writer and reader respectively
+                System.out.println("[DIAGNOSTIC] Streams created. About to start ClientWriter...");
                 new ClientWriter(pw).start();
+                System.out.println("ClientWriter started successfully. About to start ClientReader...");
                 new ClientReader(br).start();
 
             } catch (IOException e) {

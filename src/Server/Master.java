@@ -33,15 +33,18 @@ public class Master {
         LinkedBlockingQueue<mathProblem> Problems = new LinkedBlockingQueue<>();
         LinkedBlockingQueue<mathSolution> Solutions = new LinkedBlockingQueue<>();
 
-        try (ServerSocket serverSocket = new ServerSocket(portNumber)) {
+        try {
+            ServerSocket serverSocket = new ServerSocket(portNumber);
             System.out.print("Master.Master Running on port " + portNumber);
-            slaveCommunicator = new SlaveCommunicator(serverSocket, Problems, Solutions);
+            //slaveCommunicator = new SlaveCommunicator(serverSocket, Problems, Solutions);
             clientCommunicator = new ClientCommunicator(serverSocket, Problems, Solutions);
 
-            Thread slaveThread = new Thread(slaveCommunicator);
-            slaveThread.start();
+            //Thread slaveThread = new Thread(slaveCommunicator);
+            System.out.println("Starting SlaveCommunicator");
+            //slaveThread.start();
 
             Thread clientThread = new Thread(clientCommunicator);
+            System.out.println("Starting ClientCommunicator");
             clientThread.start();
         } catch (IOException e) {
             //idk yet
