@@ -26,7 +26,6 @@ public class Client {
                 BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
         ) {
             //code of client starts here (will accept input from user and then send to master)
-            System.out.println(br.readLine());
             String userInput;
             System.out.println("Type your messages (type 'bye' to quit):");
 
@@ -36,6 +35,7 @@ public class Client {
                 if ("bye".equalsIgnoreCase(userInput)) {
                     break;
                 }
+                System.out.println(br.readLine());
             }
 
         } catch (IOException e) {

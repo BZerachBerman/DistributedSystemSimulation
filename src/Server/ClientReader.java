@@ -3,14 +3,17 @@ package Server;
 import Shared.mathProblem;
 
 import java.io.*;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class ClientReader extends Thread {
     private BufferedReader br;
+    private LinkedBlockingQueue<mathProblem> problems;
 
-    public ClientReader(BufferedReader br) {
+    public ClientReader(BufferedReader br, LinkedBlockingQueue<mathProblem> problems) {
         this.br = br;
+        this.problems = problems;
     }
 
     //This is the Master.Master reading from client
@@ -33,6 +36,7 @@ public class ClientReader extends Thread {
             }
             int ID = 12;
             mathProblem problem = new mathProblem(ID, left, operator, right);
+            problems.add(problem);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

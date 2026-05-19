@@ -25,23 +25,36 @@ public class ClientCommunicator implements Runnable {
 
     @Override
     public void run() {
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Socket clientSocket = serverSocket.accept();
+                    System.out.println("[DIAGNOSTIC] A client has connected! Setting up streams...");
+                    PrintWriter pw = new PrintWriter(clientSocket.getOutputStream(), true);
+                    BufferedReader br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-        while (true) {
-            try {
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("[DIAGNOSTIC] A client has connected! Setting up streams...");
-                PrintWriter pw = new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader br = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+                    //these are the threads, and we pass in the writer and reader respectively
+                    System.out.println("[DIAGNOSTIC] Streams created. About to start ClientWriter...");
+                    new ClientWriter(pw, Solutions).start();
+                    System.out.println("ClientWriter started successfully. About to start ClientReader...");
+                    new ClientReader(br, Problems).start();
 
-                //these are the threads, and we pass in the writer and reader respectively
-                System.out.println("[DIAGNOSTIC] Streams created. About to start ClientWriter...");
-                new ClientWriter(pw).start();
-                System.out.println("ClientWriter started successfully. About to start ClientReader...");
-                new ClientReader(br).start();
-
-            } catch (IOException e) {
-                //idk yet
+                } catch (IOException e) {
+                    //idk yet
+                }
             }
-        }
+        }).start();
+        new Thread(() -> {
+            while (true) {
+                try {
+                    Problems.take();
+                } catch (InterruptedException e) {
+                    throw new RuntimeException(e);
+                }
+                Solutions.add(new mathSolution(66, 67));
+
+            }
+        }).start();
     }
+
 }
