@@ -15,44 +15,41 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Master {
     public static void main(String[] args) {
         System.out.println("Server Started");
-        int portNumber;
-        int masterPortNumber;
-        if (args.length > 0) {
-            portNumber = Integer.parseInt(args[0]);
-            masterPortNumber = Integer.parseInt(args[1]);
-        } else {
-            System.out.println("No ports provided.");
+        if (args.length != 2) {
+            System.out.println("Usage: java Server.Master <clientPort> <slavePort>");
             return;
         }
-        new Master().start(portNumber, masterPortNumber);
+
+        int clientPortNumber = Integer.parseInt(args[0]);
+        int slavePortNumber = Integer.parseInt(args[1]);
+
+        new Master().start(clientPortNumber, slavePortNumber);
     }
 
-    public void start(int serverPortNumber, int masterPortNumber) {
-        ClientCommunicator clientCommunicator;
-        SlaveCommunicator slaveCommunicator;
+    public void start(int clientPortNumber, int slavePortNumber) {
 
         LinkedBlockingQueue<mathProblem> Problems = new LinkedBlockingQueue<>();
         LinkedBlockingQueue<mathSolution> Solutions = new LinkedBlockingQueue<>();
 
         try {
-            ServerSocket serverSocket = new ServerSocket(serverPortNumber);
-            System.out.print("Server running on port " + serverPortNumber);
+            ServerSocket clientSocket = new ServerSocket(clientPortNumber);
+            System.out.println("Master listening for clients on port " + clientPortNumber);
 
-            ServerSocket masterSocket = new ServerSocket(masterPortNumber);
-            System.out.println("Master running on port " + masterPortNumber);
+            ServerSocket slaveSocket = new ServerSocket(slavePortNumber);
+            System.out.println("Master listening for slaves on port " + slavePortNumber);
 
-            //slaveCommunicator = new SlaveCommunicator(masterSocket, Problems, Solutions);
-            clientCommunicator = new ClientCommunicator(serverSocket, Problems, Solutions);
+            SlaveCommunicator slaveCommunicator = new SlaveCommunicator(slaveSocket, Problems, Solutions);
+            ClientCommunicator clientCommunicator = new ClientCommunicator(clientSocket, Problems, Solutions);
 
-            //Thread slaveThread = new Thread(slaveCommunicator);
-            //System.out.println("Starting SlaveCommunicator");
-            //slaveThread.start();
+            Thread slaveThread = new Thread(slaveCommunicator);
+            System.out.println("Starting SlaveCommunicator");
+            slaveThread.start();
 
             Thread clientThread = new Thread(clientCommunicator);
             System.out.println("Starting ClientCommunicator");
             clientThread.start();
         } catch (IOException e) {
-            //idk yet
+            throw new RuntimeException(e);
         }
     }
 }
