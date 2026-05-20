@@ -44,17 +44,6 @@ public class ClientCommunicator implements Runnable {
                 }
             }
         }).start();
-        new Thread(() -> {
-            while (true) {
-                try {
-                    Problems.take();
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
-                }
-                Solutions.add(new mathSolution(66, 67));
-
-            }
-        }).start();
+        // Solution generation is now handled through the slave communication flow
     }
-
 }
