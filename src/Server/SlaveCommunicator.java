@@ -58,11 +58,17 @@ public class SlaveCommunicator implements Runnable {
 
     private void sendProblemToSlave(mathProblem problem) {
         String operator = problem.operator();
-        //TODO create scheduling algorithm. This includes making an array that tracks workload of each slave.
-        // I was thinking of making an array of SlaveWriters with a workload variable.
-        // Alternatively, the algorithm can calculate workload live.
-        // Either way, we need a way to differentiate between AdditionSlaves and SubtractionSlaves.
-        mathProblemQueueList.get(0).add(problem);
+
+        if (operator.equals("+")) {
+            System.out.println("SlaveCommunicator assigning addition problem to AdditionSlave queue");
+            mathProblemQueueList.get(0).add(problem);
+        } else if (operator.equals("-")) {
+            System.out.println("SlaveCommunicator assigning subtraction problem to SubtractionSlave queue");
+            mathProblemQueueList.get(1).add(problem);
+        } else {
+            System.out.println("Unknown operator. Defaulting problem to first slave queue.");
+            mathProblemQueueList.get(0).add(problem);
+        }
     }
 
 
